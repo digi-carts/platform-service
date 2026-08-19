@@ -16,19 +16,42 @@ public class TicketCommentService {
 
     private final TicketCommentRepository repository;
 
+    /**
+     * Creates a new {@code TicketCommentService}.
+     *
+     * @param repository repository
+     */
     public TicketCommentService(TicketCommentRepository repository) {
         this.repository = repository;
     }
 
+    /**
+     * Finds by ticket id.
+     *
+     * @param ticketId ticket id
+     * @return matching records
+     */
     public List<TicketComment> findByTicketId(String ticketId) {
         return repository.findByTicketId(ticketId);
     }
 
+    /**
+     * Finds by id.
+     *
+     * @param id resource identifier
+     * @return the ticket comment
+     */
     public TicketComment findById(String id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("TicketComment not found: " + id));
     }
 
+    /**
+     * Creates a new record.
+     *
+     * @param req request payload
+     * @return the ticket comment
+     */
     public TicketComment create(TicketCommentDto.CreateRequest req) {
         TicketComment comment = new TicketComment();
         comment.setTicketId(req.getTicketId());
@@ -38,6 +61,11 @@ public class TicketCommentService {
         return repository.save(comment);
     }
 
+    /**
+     * Deletes the record.
+     *
+     * @param id resource identifier
+     */
     public void delete(String id) {
         findById(id);
         repository.deleteById(id);

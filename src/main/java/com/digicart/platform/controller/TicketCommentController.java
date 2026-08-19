@@ -19,10 +19,23 @@ public class TicketCommentController {
 
     private final TicketCommentService service;
 
+    /**
+     * Creates a new {@code TicketCommentController}.
+     *
+     * @param service service
+     */
     public TicketCommentController(TicketCommentService service) {
         this.service = service;
     }
 
+    /**
+     * Handles GET.
+     *
+     * @param ticketId ticket id
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return matching records
+     */
     @GetMapping
     public List<TicketComment> findByTicketId(
             @RequestParam String ticketId,
@@ -31,6 +44,14 @@ public class TicketCommentController {
         return service.findByTicketId(ticketId);
     }
 
+    /**
+     * Handles {@code GET /{id}}.
+     *
+     * @param id resource identifier
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return the ticket comment
+     */
     @GetMapping("/{id}")
     public TicketComment findById(
             @PathVariable String id,
@@ -39,6 +60,14 @@ public class TicketCommentController {
         return service.findById(id);
     }
 
+    /**
+     * Handles POST.
+     *
+     * @param req request payload
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return HTTP response
+     */
     @PostMapping
     public ResponseEntity<TicketComment> create(
             @Valid @RequestBody TicketCommentDto.CreateRequest req,
@@ -47,6 +76,14 @@ public class TicketCommentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(req));
     }
 
+    /**
+     * Handles {@code DELETE /{id}}.
+     *
+     * @param id resource identifier
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return HTTP response
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
             @PathVariable String id,

@@ -19,10 +19,22 @@ public class AdminUserController {
 
     private final AdminUserService service;
 
+    /**
+     * Creates a new {@code AdminUserController}.
+     *
+     * @param service service
+     */
     public AdminUserController(AdminUserService service) {
         this.service = service;
     }
 
+    /**
+     * Handles GET.
+     *
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return matching records
+     */
     @GetMapping
     public List<AdminUser> findAll(
             @RequestHeader(value = "X-User-Id", required = false) String userId,
@@ -30,6 +42,14 @@ public class AdminUserController {
         return service.findAll();
     }
 
+    /**
+     * Handles {@code GET /{id}}.
+     *
+     * @param id resource identifier
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return the admin user
+     */
     @GetMapping("/{id}")
     public AdminUser findById(
             @PathVariable String id,
@@ -38,6 +58,14 @@ public class AdminUserController {
         return service.findById(id);
     }
 
+    /**
+     * Handles {@code GET /by-email/{email}}.
+     *
+     * @param email email address
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return the admin user
+     */
     @GetMapping("/by-email/{email}")
     public AdminUser findByEmail(
             @PathVariable String email,
@@ -46,6 +74,14 @@ public class AdminUserController {
         return service.findByEmail(email);
     }
 
+    /**
+     * Handles POST.
+     *
+     * @param req request payload
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return HTTP response
+     */
     @PostMapping
     public ResponseEntity<AdminUser> create(
             @Valid @RequestBody AdminUserDto.CreateRequest req,
@@ -54,6 +90,15 @@ public class AdminUserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(req));
     }
 
+    /**
+     * Handles {@code PUT /{id}}.
+     *
+     * @param id resource identifier
+     * @param req request payload
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return the admin user
+     */
     @PutMapping("/{id}")
     public AdminUser update(
             @PathVariable String id,
@@ -63,6 +108,14 @@ public class AdminUserController {
         return service.update(id, req);
     }
 
+    /**
+     * Handles {@code DELETE /{id}}.
+     *
+     * @param id resource identifier
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return HTTP response
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
             @PathVariable String id,

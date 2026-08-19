@@ -11,5 +11,11 @@ import java.util.Optional;
  */
 @Repository
 public interface AdminUserRepository extends JpaRepository<AdminUser, String> {
+    /**
+     * Finds by email.
+     *
+     * @param email email address
+     * @return the value if present
+     */
     Optional<AdminUser> findByEmail(String email);
 }

@@ -14,10 +14,22 @@ public class PlatformConfigController {
 
     private final PlatformConfigService service;
 
+    /**
+     * Creates a new {@code PlatformConfigController}.
+     *
+     * @param service service
+     */
     public PlatformConfigController(PlatformConfigService service) {
         this.service = service;
     }
 
+    /**
+     * Handles GET.
+     *
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return the platform config
+     */
     @GetMapping
     public PlatformConfig get(
             @RequestHeader(value = "X-User-Id", required = false) String userId,
@@ -25,6 +37,14 @@ public class PlatformConfigController {
         return service.get();
     }
 
+    /**
+     * Handles PUT.
+     *
+     * @param req request payload
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return the platform config
+     */
     @PutMapping
     public PlatformConfig update(
             @RequestBody PlatformConfigDto.UpdateRequest req,

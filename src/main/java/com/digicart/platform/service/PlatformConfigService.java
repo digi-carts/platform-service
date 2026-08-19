@@ -13,10 +13,19 @@ public class PlatformConfigService {
 
     private final PlatformConfigRepository repository;
 
+    /**
+     * Creates a new {@code PlatformConfigService}.
+     *
+     * @param repository repository
+     */
     public PlatformConfigService(PlatformConfigRepository repository) {
         this.repository = repository;
     }
 
+    /**
+     * Get.
+     * @return the platform config
+     */
     public PlatformConfig get() {
         return repository.findById("singleton").orElseGet(() -> {
             PlatformConfig config = new PlatformConfig();
@@ -26,6 +35,12 @@ public class PlatformConfigService {
         });
     }
 
+    /**
+     * Updates an existing record.
+     *
+     * @param req request payload
+     * @return the platform config
+     */
     public PlatformConfig update(PlatformConfigDto.UpdateRequest req) {
         PlatformConfig config = get();
         if (req.getData() != null) config.setData(req.getData());
