@@ -15,7 +15,7 @@ import java.util.List;
  * REST controller exposing support ticket HTTP APIs for <em>platform-service</em>.
  */
 @RestController
-@RequestMapping("/support-tickets")
+@RequestMapping("/api/support")
 public class SupportTicketController {
 
     private final SupportTicketService service;

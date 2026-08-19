@@ -14,7 +14,7 @@ import java.util.List;
  * REST controller exposing admin user HTTP APIs for <em>platform-service</em>.
  */
 @RestController
-@RequestMapping("/admin-users")
+@RequestMapping("/api/admin")
 public class AdminUserController {
 
     private final AdminUserService service;

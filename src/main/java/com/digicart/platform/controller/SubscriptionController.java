@@ -14,7 +14,7 @@ import java.util.List;
  * REST controller exposing subscription HTTP APIs for <em>platform-service</em>.
  */
 @RestController
-@RequestMapping("/subscriptions")
+@RequestMapping("/api/subscriptions")
 public class SubscriptionController {
 
     private final SubscriptionService service;

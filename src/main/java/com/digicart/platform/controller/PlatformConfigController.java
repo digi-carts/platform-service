@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
  * REST controller exposing platform config HTTP APIs for <em>platform-service</em>.
  */
 @RestController
-@RequestMapping("/platform-config")
+@RequestMapping("/api/platform")
 public class PlatformConfigController {
 
     private final PlatformConfigService service;
