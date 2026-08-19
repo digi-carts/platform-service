@@ -5,6 +5,9 @@ import com.digicart.platform.entity.PlatformConfig;
 import com.digicart.platform.service.PlatformConfigService;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller exposing platform config HTTP APIs for <em>platform-service</em>.
+ */
 @RestController
 @RequestMapping("/platform-config")
 public class PlatformConfigController {

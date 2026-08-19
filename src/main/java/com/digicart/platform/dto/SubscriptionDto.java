@@ -3,8 +3,14 @@ package com.digicart.platform.dto;
 import com.digicart.platform.entity.BillingPeriod;
 import jakarta.validation.constraints.NotBlank;
 
+/**
+ * Request/response DTO: Subscription Dto.
+ */
 public class SubscriptionDto {
 
+    /**
+     * Request/response DTO: Create Request.
+     */
     public static class CreateRequest {
         @NotBlank
         private String name;
@@ -34,6 +40,9 @@ public class SubscriptionDto {
         public void setDetails(String details) { this.details = details; }
     }
 
+    /**
+     * Request/response DTO: Update Request.
+     */
     public static class UpdateRequest {
         private String name;
         private Integer maxProducts;

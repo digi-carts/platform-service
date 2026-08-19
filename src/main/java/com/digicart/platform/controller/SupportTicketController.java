@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller exposing support ticket HTTP APIs for <em>platform-service</em>.
+ */
 @RestController
 @RequestMapping("/support-tickets")
 public class SupportTicketController {

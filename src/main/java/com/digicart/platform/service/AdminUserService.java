@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Application service implementing admin user use cases for <em>platform-service</em>.
+ */
 @Service
 public class AdminUserService {
 

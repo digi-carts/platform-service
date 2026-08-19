@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller exposing subscription HTTP APIs for <em>platform-service</em>.
+ */
 @RestController
 @RequestMapping("/subscriptions")
 public class SubscriptionController {
