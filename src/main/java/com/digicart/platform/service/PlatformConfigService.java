@@ -5,6 +5,9 @@ import com.digicart.platform.entity.PlatformConfig;
 import com.digicart.platform.repository.PlatformConfigRepository;
 import org.springframework.stereotype.Service;
 
+/**
+ * Application service implementing platform config use cases for <em>platform-service</em>.
+ */
 @Service
 public class PlatformConfigService {
 

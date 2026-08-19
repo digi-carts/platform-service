@@ -6,8 +6,14 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.time.Instant;
 
+/**
+ * Request/response DTO: Admin User Dto.
+ */
 public class AdminUserDto {
 
+    /**
+     * Request/response DTO: Create Request.
+     */
     public static class CreateRequest {
         @NotBlank @Email
         private String email;
@@ -28,6 +34,9 @@ public class AdminUserDto {
         public void setAvailableDays(Integer availableDays) { this.availableDays = availableDays; }
     }
 
+    /**
+     * Request/response DTO: Update Request.
+     */
     public static class UpdateRequest {
         private AdminStatus status;
         private String subscriptionId;

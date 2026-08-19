@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller exposing admin user HTTP APIs for <em>platform-service</em>.
+ */
 @RestController
 @RequestMapping("/admin-users")
 public class AdminUserController {

@@ -6,6 +6,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 
+/**
+ * JPA entity mapped in this service schema (Subscription).
+ */
 @Entity
 @Table(name = "subscriptions", schema = "platform_svc")
 @EntityListeners(AuditingEntityListener.class)

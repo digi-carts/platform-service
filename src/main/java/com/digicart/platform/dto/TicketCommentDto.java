@@ -2,8 +2,14 @@ package com.digicart.platform.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
+/**
+ * Request/response DTO: Ticket Comment Dto.
+ */
 public class TicketCommentDto {
 
+    /**
+     * Request/response DTO: Create Request.
+     */
     public static class CreateRequest {
         @NotBlank
         private String ticketId;

@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller exposing ticket comment HTTP APIs for <em>platform-service</em>.
+ */
 @RestController
 @RequestMapping("/ticket-comments")
 public class TicketCommentController {
