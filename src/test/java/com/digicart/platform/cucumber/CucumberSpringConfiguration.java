@@ -2,20 +2,12 @@ package com.digicart.platform.cucumber;
 
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import com.digicart.platform.exception.GlobalExceptionHandler;
-import com.digicart.platform.controller.HealthController;
-import com.digicart.platform.controller.SubscriptionController;
-import com.digicart.platform.service.SubscriptionService;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @CucumberContextConfiguration
-@WebMvcTest(controllers = { HealthController.class, SubscriptionController.class })
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc(addFilters = false)
-@Import(GlobalExceptionHandler.class)
+@ActiveProfiles("test")
 public class CucumberSpringConfiguration {
-    @MockBean
-    SubscriptionService subscriptionService;
-
 }
