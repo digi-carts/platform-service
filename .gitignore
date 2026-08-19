@@ -1,0 +1,13 @@
+target/
+.env
+*.class
+.idea/
+*.iml
+*.jar
+*.war
+*.ear
+.DS_Store
+*.log
+.mvn/
+mvnw
+mvnw.cmd
