@@ -10,8 +10,16 @@ public class PlatformConfigDto {
      */
     public static class UpdateRequest {
         private String data = "{}";
-
+        /**
+         * Returns data.
+         * @return the string
+         */
         public String getData() { return data; }
+        /**
+         * Sets data.
+         *
+         * @param data data
+         */
         public void setData(String data) { this.data = data; }
     }
 }

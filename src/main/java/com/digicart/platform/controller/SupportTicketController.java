@@ -20,10 +20,25 @@ public class SupportTicketController {
 
     private final SupportTicketService service;
 
+    /**
+     * Creates a new {@code SupportTicketController}.
+     *
+     * @param service service
+     */
     public SupportTicketController(SupportTicketService service) {
         this.service = service;
     }
 
+    /**
+     * Handles GET.
+     *
+     * @param storeId store (tenant) identifier
+     * @param adminEmail admin email
+     * @param status status
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return matching records
+     */
     @GetMapping
     public List<SupportTicket> findAll(
             @RequestParam(required = false) String storeId,
@@ -37,6 +52,14 @@ public class SupportTicketController {
         return service.findAll();
     }
 
+    /**
+     * Handles {@code GET /{id}}.
+     *
+     * @param id resource identifier
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return the support ticket
+     */
     @GetMapping("/{id}")
     public SupportTicket findById(
             @PathVariable String id,
@@ -45,6 +68,14 @@ public class SupportTicketController {
         return service.findById(id);
     }
 
+    /**
+     * Handles POST.
+     *
+     * @param req request payload
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return HTTP response
+     */
     @PostMapping
     public ResponseEntity<SupportTicket> create(
             @Valid @RequestBody SupportTicketDto.CreateRequest req,
@@ -53,6 +84,15 @@ public class SupportTicketController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(req));
     }
 
+    /**
+     * Handles {@code PUT /{id}}.
+     *
+     * @param id resource identifier
+     * @param req request payload
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return the support ticket
+     */
     @PutMapping("/{id}")
     public SupportTicket update(
             @PathVariable String id,
@@ -62,6 +102,14 @@ public class SupportTicketController {
         return service.update(id, req);
     }
 
+    /**
+     * Handles {@code DELETE /{id}}.
+     *
+     * @param id resource identifier
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return HTTP response
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
             @PathVariable String id,

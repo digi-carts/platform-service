@@ -87,3 +87,7 @@ mvn spring-boot:run
 - [platform-ui](https://github.com/digi-carts/platform-ui/blob/stage/doc/README.md)
 - [auth-service](https://github.com/digi-carts/auth-service/blob/stage/doc/README.md)
 - [payment-service](https://github.com/digi-carts/payment-service/blob/stage/doc/README.md) (`PaymentType.SUBSCRIPTION`)
+
+## REST API reference
+
+See [api.md](api.md) for every HTTP endpoint generated from Spring controllers.

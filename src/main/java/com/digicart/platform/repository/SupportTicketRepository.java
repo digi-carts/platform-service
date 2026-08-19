@@ -12,7 +12,25 @@ import java.util.List;
  */
 @Repository
 public interface SupportTicketRepository extends JpaRepository<SupportTicket, String> {
+    /**
+     * Finds by store id.
+     *
+     * @param storeId store (tenant) identifier
+     * @return matching records
+     */
     List<SupportTicket> findByStoreId(String storeId);
+    /**
+     * Finds by admin email.
+     *
+     * @param adminEmail admin email
+     * @return matching records
+     */
     List<SupportTicket> findByAdminEmail(String adminEmail);
+    /**
+     * Finds by status.
+     *
+     * @param status status
+     * @return matching records
+     */
     List<SupportTicket> findByStatus(TicketStatus status);
 }

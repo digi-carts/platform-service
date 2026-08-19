@@ -19,10 +19,22 @@ public class SubscriptionController {
 
     private final SubscriptionService service;
 
+    /**
+     * Creates a new {@code SubscriptionController}.
+     *
+     * @param service service
+     */
     public SubscriptionController(SubscriptionService service) {
         this.service = service;
     }
 
+    /**
+     * Handles GET.
+     *
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return matching records
+     */
     @GetMapping
     public List<Subscription> findAll(
             @RequestHeader(value = "X-User-Id", required = false) String userId,
@@ -30,6 +42,14 @@ public class SubscriptionController {
         return service.findAll();
     }
 
+    /**
+     * Handles {@code GET /{id}}.
+     *
+     * @param id resource identifier
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return the subscription
+     */
     @GetMapping("/{id}")
     public Subscription findById(
             @PathVariable String id,
@@ -38,6 +58,14 @@ public class SubscriptionController {
         return service.findById(id);
     }
 
+    /**
+     * Handles POST.
+     *
+     * @param req request payload
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return HTTP response
+     */
     @PostMapping
     public ResponseEntity<Subscription> create(
             @Valid @RequestBody SubscriptionDto.CreateRequest req,
@@ -46,6 +74,15 @@ public class SubscriptionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(req));
     }
 
+    /**
+     * Handles {@code PUT /{id}}.
+     *
+     * @param id resource identifier
+     * @param req request payload
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return the subscription
+     */
     @PutMapping("/{id}")
     public Subscription update(
             @PathVariable String id,
@@ -55,6 +92,14 @@ public class SubscriptionController {
         return service.update(id, req);
     }
 
+    /**
+     * Handles {@code DELETE /{id}}.
+     *
+     * @param id resource identifier
+     * @param userId caller user id from the gateway ({@code X-User-Id})
+     * @param userRole caller role from the gateway ({@code X-User-Role})
+     * @return HTTP response
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
             @PathVariable String id,

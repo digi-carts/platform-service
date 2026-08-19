@@ -16,19 +16,40 @@ public class SubscriptionService {
 
     private final SubscriptionRepository repository;
 
+    /**
+     * Creates a new {@code SubscriptionService}.
+     *
+     * @param repository repository
+     */
     public SubscriptionService(SubscriptionRepository repository) {
         this.repository = repository;
     }
 
+    /**
+     * Finds all.
+     * @return matching records
+     */
     public List<Subscription> findAll() {
         return repository.findAll();
     }
 
+    /**
+     * Finds by id.
+     *
+     * @param id resource identifier
+     * @return the subscription
+     */
     public Subscription findById(String id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Subscription not found: " + id));
     }
 
+    /**
+     * Creates a new record.
+     *
+     * @param req request payload
+     * @return the subscription
+     */
     public Subscription create(SubscriptionDto.CreateRequest req) {
         Subscription sub = new Subscription();
         sub.setName(req.getName());
@@ -42,6 +63,13 @@ public class SubscriptionService {
         return repository.save(sub);
     }
 
+    /**
+     * Updates an existing record.
+     *
+     * @param id resource identifier
+     * @param req request payload
+     * @return the subscription
+     */
     public Subscription update(String id, SubscriptionDto.UpdateRequest req) {
         Subscription sub = findById(id);
         if (req.getName() != null) sub.setName(req.getName());
@@ -55,6 +83,11 @@ public class SubscriptionService {
         return repository.save(sub);
     }
 
+    /**
+     * Deletes the record.
+     *
+     * @param id resource identifier
+     */
     public void delete(String id) {
         findById(id);
         repository.deleteById(id);

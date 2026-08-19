@@ -16,24 +16,51 @@ public class AdminUserService {
 
     private final AdminUserRepository repository;
 
+    /**
+     * Creates a new {@code AdminUserService}.
+     *
+     * @param repository repository
+     */
     public AdminUserService(AdminUserRepository repository) {
         this.repository = repository;
     }
 
+    /**
+     * Finds all.
+     * @return matching records
+     */
     public List<AdminUser> findAll() {
         return repository.findAll();
     }
 
+    /**
+     * Finds by id.
+     *
+     * @param id resource identifier
+     * @return the admin user
+     */
     public AdminUser findById(String id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("AdminUser not found: " + id));
     }
 
+    /**
+     * Finds by email.
+     *
+     * @param email email address
+     * @return the admin user
+     */
     public AdminUser findByEmail(String email) {
         return repository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("AdminUser not found with email: " + email));
     }
 
+    /**
+     * Creates a new record.
+     *
+     * @param req request payload
+     * @return the admin user
+     */
     public AdminUser create(AdminUserDto.CreateRequest req) {
         AdminUser user = new AdminUser();
         user.setEmail(req.getEmail());
@@ -44,6 +71,13 @@ public class AdminUserService {
         return repository.save(user);
     }
 
+    /**
+     * Updates an existing record.
+     *
+     * @param id resource identifier
+     * @param req request payload
+     * @return the admin user
+     */
     public AdminUser update(String id, AdminUserDto.UpdateRequest req) {
         AdminUser user = findById(id);
         if (req.getStatus() != null) user.setStatus(req.getStatus());
@@ -53,6 +87,11 @@ public class AdminUserService {
         return repository.save(user);
     }
 
+    /**
+     * Deletes the record.
+     *
+     * @param id resource identifier
+     */
     public void delete(String id) {
         findById(id);
         repository.deleteById(id);

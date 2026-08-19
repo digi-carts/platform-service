@@ -25,12 +25,41 @@ public class PlatformConfig {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    /**
+     * Creates a new {@code PlatformConfig}.
+     */
     public PlatformConfig() {}
-
+    /**
+     * Returns id.
+     * @return the string
+     */
     public String getId() { return id; }
+    /**
+     * Sets id.
+     *
+     * @param id resource identifier
+     */
     public void setId(String id) { this.id = id; }
+    /**
+     * Returns data.
+     * @return the string
+     */
     public String getData() { return data; }
+    /**
+     * Sets data.
+     *
+     * @param data data
+     */
     public void setData(String data) { this.data = data; }
+    /**
+     * Returns updated at.
+     * @return the instant
+     */
     public Instant getUpdatedAt() { return updatedAt; }
+    /**
+     * Sets updated at.
+     *
+     * @param updatedAt updated at
+     */
     public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
 }

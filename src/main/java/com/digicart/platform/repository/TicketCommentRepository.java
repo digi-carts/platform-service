@@ -11,5 +11,11 @@ import java.util.List;
  */
 @Repository
 public interface TicketCommentRepository extends JpaRepository<TicketComment, String> {
+    /**
+     * Finds by ticket id.
+     *
+     * @param ticketId ticket id
+     * @return matching records
+     */
     List<TicketComment> findByTicketId(String ticketId);
 }
