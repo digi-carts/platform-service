@@ -13,6 +13,6 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
     default-schema: platform_svc
-    liquibase-schema: platform_svc
+    liquibase-schema: public
 server:
   port: ${PORT:3002}
