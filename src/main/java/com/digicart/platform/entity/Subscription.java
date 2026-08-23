@@ -1,6 +1,8 @@
 package com.digicart.platform.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -37,6 +39,7 @@ public class Subscription {
     @Column(name = "custom_days")
     private Integer customDays;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "features", columnDefinition = "jsonb", nullable = false)
     private String features = "{}";
 
