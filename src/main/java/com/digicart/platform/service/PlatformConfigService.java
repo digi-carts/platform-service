@@ -11,10 +11,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Application service implementing platform config use cases for <em>platform-service</em>.
@@ -32,6 +29,7 @@ public class PlatformConfigService {
     private static final String KEY_GEMINI_KEY = "geminiApiKey";
     private static final String KEY_GEMINI_CONFIGURED = "geminiConfigured";
     private static final String KEY_GEMINI_MODEL = "geminiModel";
+    private static final String KEY_BUSINESS_LEVELS = "businessLevels";
 
     private final PlatformConfigRepository repository;
     private final ObjectMapper objectMapper;
@@ -96,6 +94,66 @@ public class PlatformConfigService {
             Thread.currentThread().interrupt();
             return Map.of("ok", false, "error", e.getMessage());
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Map<String, Object>> getBusinessLevels() {
+        Map<String, Object> data = parse(load().getData());
+        Object levels = data.get(KEY_BUSINESS_LEVELS);
+        if (levels instanceof List<?> list) {
+            return (List<Map<String, Object>>) list;
+        }
+        return new ArrayList<>();
+    }
+
+    public List<Map<String, Object>> addBusinessLevel(Map<String, Object> level) {
+        PlatformConfig config = load();
+        Map<String, Object> data = parse(config.getData());
+        List<Map<String, Object>> levels = getBusinessLevels();
+        Object rawKey = level.getOrDefault("key", level.get("label"));
+        String key = rawKey instanceof String s ? s : null;
+        if (key == null || key.isBlank()) throw new IllegalArgumentException("Level key is required");
+        boolean exists = levels.stream().anyMatch(l -> key.equals(l.get("key")));
+        if (exists) throw new IllegalArgumentException("Level key already exists: " + key);
+        level.put("key", key);
+        levels.add(level);
+        data.put(KEY_BUSINESS_LEVELS, levels);
+        config.setData(serialize(data));
+        repository.save(config);
+        return levels;
+    }
+
+    public List<Map<String, Object>> updateBusinessLevel(String originalKey, Map<String, Object> patch) {
+        PlatformConfig config = load();
+        Map<String, Object> data = parse(config.getData());
+        List<Map<String, Object>> levels = getBusinessLevels();
+        boolean found = false;
+        for (int i = 0; i < levels.size(); i++) {
+            if (originalKey.equals(levels.get(i).get("key"))) {
+                Map<String, Object> updated = new LinkedHashMap<>(levels.get(i));
+                updated.putAll(patch);
+                levels.set(i, updated);
+                found = true;
+                break;
+            }
+        }
+        if (!found) throw new NoSuchElementException("Business level not found: " + originalKey);
+        data.put(KEY_BUSINESS_LEVELS, levels);
+        config.setData(serialize(data));
+        repository.save(config);
+        return levels;
+    }
+
+    public List<Map<String, Object>> deleteBusinessLevel(String key) {
+        PlatformConfig config = load();
+        Map<String, Object> data = parse(config.getData());
+        List<Map<String, Object>> levels = getBusinessLevels();
+        boolean removed = levels.removeIf(l -> key.equals(l.get("key")));
+        if (!removed) throw new NoSuchElementException("Business level not found: " + key);
+        data.put(KEY_BUSINESS_LEVELS, levels);
+        config.setData(serialize(data));
+        repository.save(config);
+        return levels;
     }
 
     private PlatformConfig load() {

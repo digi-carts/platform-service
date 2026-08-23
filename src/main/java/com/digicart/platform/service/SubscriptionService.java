@@ -39,6 +39,8 @@ public class SubscriptionService {
         sub.setCustomDays(req.getCustomDays());
         if (req.getFeatures() != null) sub.setFeatures(req.getFeatures());
         sub.setDetails(req.getDetails());
+        sub.setLevel(req.getLevel());
+        if (req.getMaxUses() != null) sub.setMaxUses(req.getMaxUses());
         return repository.save(sub);
     }
 
@@ -52,7 +54,16 @@ public class SubscriptionService {
         if (req.getCustomDays() != null) sub.setCustomDays(req.getCustomDays());
         if (req.getFeatures() != null) sub.setFeatures(req.getFeatures());
         if (req.getDetails() != null) sub.setDetails(req.getDetails());
+        if (req.getLevel() != null) sub.setLevel(req.getLevel().isBlank() ? null : req.getLevel());
+        if (req.getMaxUses() != null) sub.setMaxUses(req.getMaxUses());
         return repository.save(sub);
+    }
+
+    public List<String> findNamesByLevel(String levelKey) {
+        return repository.findAll().stream()
+                .filter(s -> levelKey.equals(s.getLevel()))
+                .map(Subscription::getName)
+                .toList();
     }
 
     public void delete(String id) {

@@ -21,6 +21,8 @@ public class SubscriptionDto {
         private Integer customDays;
         private String features = "{}";
         private String details;
+        private String level;
+        private Integer maxUses;
 
         public String getName() { return name; }
         public void setName(String name) { this.name = name; }
@@ -38,6 +40,10 @@ public class SubscriptionDto {
         public void setFeatures(String features) { this.features = features; }
         public String getDetails() { return details; }
         public void setDetails(String details) { this.details = details; }
+        public String getLevel() { return level; }
+        public void setLevel(String level) { this.level = level; }
+        public Integer getMaxUses() { return maxUses; }
+        public void setMaxUses(Integer maxUses) { this.maxUses = maxUses; }
     }
 
     /**
@@ -52,6 +58,8 @@ public class SubscriptionDto {
         private Integer customDays;
         private String features;
         private String details;
+        private String level;
+        private Integer maxUses;
 
         public String getName() { return name; }
         public void setName(String name) { this.name = name; }
@@ -69,5 +77,9 @@ public class SubscriptionDto {
         public void setFeatures(String features) { this.features = features; }
         public String getDetails() { return details; }
         public void setDetails(String details) { this.details = details; }
+        public String getLevel() { return level; }
+        public void setLevel(String level) { this.level = level; }
+        public Integer getMaxUses() { return maxUses; }
+        public void setMaxUses(Integer maxUses) { this.maxUses = maxUses; }
     }
 }
