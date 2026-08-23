@@ -15,4 +15,5 @@ public interface SupportTicketRepository extends JpaRepository<SupportTicket, St
     List<SupportTicket> findByStoreId(String storeId);
     List<SupportTicket> findByAdminEmail(String adminEmail);
     List<SupportTicket> findByStatus(TicketStatus status);
+    long countByStatusIn(List<TicketStatus> statuses);
 }
