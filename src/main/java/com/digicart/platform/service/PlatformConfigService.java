@@ -2,8 +2,6 @@ package com.digicart.platform.service;
 
 import com.digicart.platform.entity.PlatformConfig;
 import com.digicart.platform.repository.PlatformConfigRepository;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -20,7 +18,6 @@ import java.util.*;
 public class PlatformConfigService {
 
     private static final Set<String> SENSITIVE = Set.of("cloudflareApiToken", "geminiApiKey");
-    private static final TypeReference<Map<String, Object>> MAP_TYPE = new TypeReference<>() {};
     private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
     private static final String KEY_CF_TOKEN = "cloudflareApiToken";
     private static final String KEY_CF_ZONE = "cloudflareZoneId";
@@ -32,46 +29,43 @@ public class PlatformConfigService {
     private static final String KEY_BUSINESS_LEVELS = "businessLevels";
 
     private final PlatformConfigRepository repository;
-    private final ObjectMapper objectMapper;
 
-    public PlatformConfigService(PlatformConfigRepository repository, ObjectMapper objectMapper) {
+    public PlatformConfigService(PlatformConfigRepository repository) {
         this.repository = repository;
-        this.objectMapper = objectMapper;
     }
 
     public Map<String, Object> getData() {
-        return masked(parse(load().getData()));
+        return masked(load().getData());
     }
 
     public Map<String, Object> getAdminSettings() {
-        Map<String, Object> data = parse(load().getData());
+        Map<String, Object> data = load().getData();
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("adminInactiveDays", data.getOrDefault("adminInactiveDays", 30));
         result.put("cloudflareConfigured", data.containsKey("cloudflareApiToken"));
         result.put("cloudflareZoneId", data.getOrDefault("cloudflareZoneId", ""));
         result.put("cloudflareDomain", data.getOrDefault("cloudflareDomain", ""));
         result.put("storefrontHost", data.getOrDefault("storefrontHost", ""));
-        result.put("geminiConfigured", data.containsKey("geminiApiKey") && !((String) data.getOrDefault("geminiApiKey", "")).isBlank());
+        result.put("geminiConfigured", data.containsKey("geminiApiKey") && !String.valueOf(data.getOrDefault("geminiApiKey", "")).isBlank());
         result.put("geminiModel", data.getOrDefault("geminiModel", "gemini-3.5-flash-lite"));
         return result;
     }
 
     public Object getInfoContent() {
-        Map<String, Object> data = parse(load().getData());
-        return data.getOrDefault("infoContent", new HashMap<>());
+        return load().getData().getOrDefault("infoContent", new HashMap<>());
     }
 
     public Map<String, Object> patch(Map<String, Object> incoming) {
         PlatformConfig config = load();
-        Map<String, Object> data = parse(config.getData());
+        Map<String, Object> data = new HashMap<>(config.getData());
         data.putAll(incoming);
-        config.setData(serialize(data));
+        config.setData(data);
         repository.save(config);
         return masked(data);
     }
 
     public Map<String, Object> testCloudflare() {
-        Map<String, Object> data = parse(load().getData());
+        Map<String, Object> data = load().getData();
         String token = (String) data.get("cloudflareApiToken");
         String zoneId = (String) data.get("cloudflareZoneId");
         if (token == null || token.isBlank() || zoneId == null || zoneId.isBlank()) {
@@ -98,8 +92,7 @@ public class PlatformConfigService {
 
     @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getBusinessLevels() {
-        Map<String, Object> data = parse(load().getData());
-        Object levels = data.get(KEY_BUSINESS_LEVELS);
+        Object levels = load().getData().get(KEY_BUSINESS_LEVELS);
         if (levels instanceof List<?> list) {
             return (List<Map<String, Object>>) list;
         }
@@ -108,7 +101,7 @@ public class PlatformConfigService {
 
     public List<Map<String, Object>> addBusinessLevel(Map<String, Object> level) {
         PlatformConfig config = load();
-        Map<String, Object> data = parse(config.getData());
+        Map<String, Object> data = new HashMap<>(config.getData());
         List<Map<String, Object>> levels = getBusinessLevels();
         Object rawKey = level.getOrDefault("key", level.get("label"));
         String key = rawKey instanceof String s ? s : null;
@@ -118,14 +111,14 @@ public class PlatformConfigService {
         level.put("key", key);
         levels.add(level);
         data.put(KEY_BUSINESS_LEVELS, levels);
-        config.setData(serialize(data));
+        config.setData(data);
         repository.save(config);
         return levels;
     }
 
     public List<Map<String, Object>> updateBusinessLevel(String originalKey, Map<String, Object> patch) {
         PlatformConfig config = load();
-        Map<String, Object> data = parse(config.getData());
+        Map<String, Object> data = new HashMap<>(config.getData());
         List<Map<String, Object>> levels = getBusinessLevels();
         boolean found = false;
         for (int i = 0; i < levels.size(); i++) {
@@ -139,19 +132,19 @@ public class PlatformConfigService {
         }
         if (!found) throw new NoSuchElementException("Business level not found: " + originalKey);
         data.put(KEY_BUSINESS_LEVELS, levels);
-        config.setData(serialize(data));
+        config.setData(data);
         repository.save(config);
         return levels;
     }
 
     public List<Map<String, Object>> deleteBusinessLevel(String key) {
         PlatformConfig config = load();
-        Map<String, Object> data = parse(config.getData());
+        Map<String, Object> data = new HashMap<>(config.getData());
         List<Map<String, Object>> levels = getBusinessLevels();
         boolean removed = levels.removeIf(l -> key.equals(l.get("key")));
         if (!removed) throw new NoSuchElementException("Business level not found: " + key);
         data.put(KEY_BUSINESS_LEVELS, levels);
-        config.setData(serialize(data));
+        config.setData(data);
         repository.save(config);
         return levels;
     }
@@ -160,33 +153,16 @@ public class PlatformConfigService {
         return repository.findById("singleton").orElseGet(() -> {
             PlatformConfig config = new PlatformConfig();
             config.setId("singleton");
-            config.setData("{}");
+            config.setData(new HashMap<>());
             return repository.save(config);
         });
-    }
-
-    private Map<String, Object> parse(String json) {
-        try {
-            Map<String, Object> result = objectMapper.readValue(json, MAP_TYPE);
-            return new HashMap<>(result);
-        } catch (Exception e) {
-            return new HashMap<>();
-        }
-    }
-
-    private String serialize(Map<String, Object> data) {
-        try {
-            return objectMapper.writeValueAsString(data);
-        } catch (Exception e) {
-            return "{}";
-        }
     }
 
     private Map<String, Object> masked(Map<String, Object> data) {
         Map<String, Object> result = new LinkedHashMap<>(data);
         SENSITIVE.forEach(result::remove);
         result.put("cloudflareConfigured", data.containsKey("cloudflareApiToken"));
-        result.put("geminiConfigured", data.containsKey("geminiApiKey") && !((String) data.getOrDefault("geminiApiKey", "")).isBlank());
+        result.put("geminiConfigured", data.containsKey("geminiApiKey") && !String.valueOf(data.getOrDefault("geminiApiKey", "")).isBlank());
         return result;
     }
 }

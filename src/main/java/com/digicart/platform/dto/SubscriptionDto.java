@@ -3,6 +3,9 @@ package com.digicart.platform.dto;
 import com.digicart.platform.entity.BillingPeriod;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Request/response DTO: Subscription Dto.
  */
@@ -19,7 +22,7 @@ public class SubscriptionDto {
         private String currency = "INR";
         private BillingPeriod billingPeriod = BillingPeriod.MONTHLY;
         private Integer customDays;
-        private String features = "{}";
+        private Map<String, Object> features = new HashMap<>();
         private String details;
         private String level;
         private Integer maxUses;
@@ -36,8 +39,8 @@ public class SubscriptionDto {
         public void setBillingPeriod(BillingPeriod billingPeriod) { this.billingPeriod = billingPeriod; }
         public Integer getCustomDays() { return customDays; }
         public void setCustomDays(Integer customDays) { this.customDays = customDays; }
-        public String getFeatures() { return features; }
-        public void setFeatures(String features) { this.features = features; }
+        public Map<String, Object> getFeatures() { return features; }
+        public void setFeatures(Map<String, Object> features) { this.features = features; }
         public String getDetails() { return details; }
         public void setDetails(String details) { this.details = details; }
         public String getLevel() { return level; }
@@ -56,7 +59,7 @@ public class SubscriptionDto {
         private String currency;
         private BillingPeriod billingPeriod;
         private Integer customDays;
-        private String features;
+        private Map<String, Object> features;
         private String details;
         private String level;
         private Integer maxUses;
@@ -73,8 +76,8 @@ public class SubscriptionDto {
         public void setBillingPeriod(BillingPeriod billingPeriod) { this.billingPeriod = billingPeriod; }
         public Integer getCustomDays() { return customDays; }
         public void setCustomDays(Integer customDays) { this.customDays = customDays; }
-        public String getFeatures() { return features; }
-        public void setFeatures(String features) { this.features = features; }
+        public Map<String, Object> getFeatures() { return features; }
+        public void setFeatures(Map<String, Object> features) { this.features = features; }
         public String getDetails() { return details; }
         public void setDetails(String details) { this.details = details; }
         public String getLevel() { return level; }
