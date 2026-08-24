@@ -149,6 +149,68 @@ public class PlatformConfigService {
         return levels;
     }
 
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> getWizardConfig() {
+        Object raw = load().getData().get("wizardConfig");
+        if (raw instanceof Map<?, ?> m) {
+            Object steps = m.get("steps");
+            if (steps instanceof List<?> list && !list.isEmpty()) {
+                return (Map<String, Object>) raw;
+            }
+        }
+        return defaultWizardConfig();
+    }
+
+    public Map<String, Object> saveWizardConfig(Map<String, Object> incoming) {
+        PlatformConfig config = load();
+        Map<String, Object> data = new HashMap<>(config.getData());
+        data.put("wizardConfig", incoming);
+        config.setData(data);
+        repository.save(config);
+        return incoming;
+    }
+
+    private static Map<String, Object> wizardStep(String key, String label, boolean locked, boolean skippable, List<Map<String, Object>> fields) {
+        Map<String, Object> s = new LinkedHashMap<>();
+        s.put("key", key);
+        s.put("label", label);
+        s.put("description", "");
+        s.put("enabled", true);
+        s.put("skippable", skippable);
+        if (locked) s.put("locked", true);
+        if (fields != null) s.put("fields", fields);
+        return s;
+    }
+
+    private static Map<String, Object> wizardField(String key, String label) {
+        Map<String, Object> f = new LinkedHashMap<>();
+        f.put("key", key);
+        f.put("label", label);
+        f.put("enabled", true);
+        f.put("required", false);
+        return f;
+    }
+
+    private static Map<String, Object> defaultWizardConfig() {
+        List<Map<String, Object>> shopFields = List.of(
+                wizardField("email", "Email"), wizardField("phone", "Phone"),
+                wizardField("currency", "Currency"), wizardField("country", "Country"),
+                wizardField("address", "Address"), wizardField("logo", "Store Logo"),
+                wizardField("pwaIcon", "PWA Icon"));
+        List<Map<String, Object>> notifFields = List.of(
+                wizardField("whatsapp", "WhatsApp"), wizardField("sms", "SMS"),
+                wizardField("email", "Email (SMTP)"));
+        List<Map<String, Object>> steps = List.of(
+                wizardStep("shop",         "Shop Details",  true,  false, shopFields),
+                wizardStep("domain",       "Domain",        false, true,  null),
+                wizardStep("payments",     "Payments",      false, true,  null),
+                wizardStep("notifications","Notifications", false, true,  notifFields),
+                wizardStep("ai",           "AI Assistant",  false, true,  null),
+                wizardStep("subscription", "Subscription",  false, true,  null),
+                wizardStep("finish",       "Finish",        true,  false, null));
+        return Map.of("steps", steps);
+    }
+
     private PlatformConfig load() {
         return repository.findById("singleton").orElseGet(() -> {
             PlatformConfig config = new PlatformConfig();
