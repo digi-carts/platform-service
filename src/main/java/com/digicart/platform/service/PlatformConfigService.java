@@ -227,4 +227,76 @@ public class PlatformConfigService {
         result.put("geminiConfigured", data.containsKey("geminiApiKey") && !String.valueOf(data.getOrDefault("geminiApiKey", "")).isBlank());
         return result;
     }
+
+    public Map<String, Object> getAiConfig() {
+        Map<String, Object> data = load().getData();
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("geminiConfigured", data.containsKey("geminiApiKey") && !String.valueOf(data.getOrDefault("geminiApiKey", "")).isBlank());
+        result.put("geminiModel", data.getOrDefault("geminiModel", "gemini-2.0-flash-lite"));
+        return result;
+    }
+
+    public Object patchInfoContent(Map<String, Object> incoming) {
+        PlatformConfig config = load();
+        Map<String, Object> data = new HashMap<>(config.getData());
+        data.put("infoContent", incoming);
+        config.setData(data);
+        repository.save(config);
+        return incoming;
+    }
+
+    public Map<String, Object> addCloudflareDns(Map<String, Object> dnsRecord) {
+        Map<String, Object> data = load().getData();
+        String token = (String) data.get(KEY_CF_TOKEN);
+        String zoneId = (String) data.get(KEY_CF_ZONE);
+        if (token == null || token.isBlank() || zoneId == null || zoneId.isBlank()) {
+            return Map.of("ok", false, "error", "Cloudflare not configured");
+        }
+        try {
+            String jsonBody = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(dnsRecord);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://api.cloudflare.com/client/v4/zones/" + zoneId + "/dns_records"))
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                    .build();
+            HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+            return Map.of("ok", response.statusCode() < 300, "status", response.statusCode());
+        } catch (Exception e) {
+            Thread.currentThread().interrupt();
+            return Map.of("ok", false, "error", e.getMessage());
+        }
+    }
+
+    public Map<String, Object> updateFirebaseAuthorizedDomains(List<String> domains) {
+        PlatformConfig config = load();
+        Map<String, Object> data = new HashMap<>(config.getData());
+        data.put("firebaseAuthorizedDomains", domains);
+        config.setData(data);
+        repository.save(config);
+        return Map.of("domains", domains);
+    }
+
+    public Map<String, Object> aiChat(String message) {
+        Map<String, Object> data = load().getData();
+        String apiKey = (String) data.get(KEY_GEMINI_KEY);
+        String model = (String) data.getOrDefault(KEY_GEMINI_MODEL, "gemini-2.0-flash-lite");
+        if (apiKey == null || apiKey.isBlank()) {
+            return Map.of("error", "AI not configured");
+        }
+        try {
+            String safeMsg = message != null ? message.replace("\\", "\\\\").replace("\"", "\\\"") : "";
+            String jsonBody = "{\"contents\":[{\"parts\":[{\"text\":\"" + safeMsg + "\"}]}]}";
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                    .build();
+            HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+            return Map.of("response", response.body());
+        } catch (Exception e) {
+            Thread.currentThread().interrupt();
+            return Map.of("error", e.getMessage());
+        }
+    }
 }
