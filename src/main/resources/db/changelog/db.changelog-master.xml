@@ -5,4 +5,5 @@
     <include file="classpath:db/changelog/migrations/001-initial-schema.xml"/>
     <include file="classpath:db/changelog/migrations/002-subscription-level-fields.xml"/>
     <include file="classpath:db/changelog/migrations/003-alter-uuid-columns-to-varchar.xml"/>
+    <include file="classpath:db/changelog/migrations/004-store-templates.xml"/>
 </databaseChangeLog>
