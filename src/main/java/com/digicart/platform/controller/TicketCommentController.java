@@ -14,7 +14,7 @@ import java.util.List;
  * REST controller exposing ticket comment HTTP APIs for <em>platform-service</em>.
  */
 @RestController
-@RequestMapping("/ticket-comments")
+@RequestMapping("/api/platform/ticket-comments")
 public class TicketCommentController {
 
     private final TicketCommentService service;
