@@ -1,16 +1,17 @@
 package com.digicart.platform.service;
 
 import com.digicart.platform.dto.AdminUserDto;
+import com.digicart.platform.entity.AdminStatus;
 import com.digicart.platform.entity.AdminUser;
 import com.digicart.platform.exception.EntityNotFoundException;
 import com.digicart.platform.repository.AdminUserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
-/**
- * Application service implementing admin user use cases for <em>platform-service</em>.
- */
 @Service
 public class AdminUserService {
 
@@ -56,5 +57,41 @@ public class AdminUserService {
     public void delete(String id) {
         findById(id);
         repository.deleteById(id);
+    }
+
+    @Transactional
+    public AdminUser upsertByEmail(String email, Map<String, Object> body) {
+        AdminUser user = repository.findByEmail(email).orElseGet(() -> {
+            AdminUser u = new AdminUser();
+            u.setEmail(email);
+            return u;
+        });
+        if (body.containsKey("status")) {
+            user.setStatus(AdminStatus.valueOf((String) body.get("status")));
+        }
+        if (body.containsKey("subscriptionId")) user.setSubscriptionId((String) body.get("subscriptionId"));
+        return repository.save(user);
+    }
+
+    @Transactional
+    public AdminUser updateStatus(String id, AdminStatus status) {
+        AdminUser user = findById(id);
+        user.setStatus(status);
+        return repository.save(user);
+    }
+
+    @Transactional
+    public AdminUser updateSubscription(String id, Map<String, Object> body) {
+        AdminUser user = findById(id);
+        if (body.containsKey("subscriptionId")) user.setSubscriptionId((String) body.get("subscriptionId"));
+        if (body.containsKey("renewsAt")) {
+            Object raw = body.get("renewsAt");
+            if (raw instanceof String s) user.setRenewsAt(Instant.parse(s));
+        }
+        if (body.containsKey("availableDays")) {
+            Object days = body.get("availableDays");
+            if (days instanceof Number n) user.setAvailableDays(n.intValue());
+        }
+        return repository.save(user);
     }
 }

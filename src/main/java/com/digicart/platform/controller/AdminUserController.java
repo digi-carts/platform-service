@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * REST controller exposing admin user HTTP APIs for <em>platform-service</em>.
@@ -70,5 +71,31 @@ public class AdminUserController {
             @RequestHeader(value = "X-User-Role", required = false) String userRole) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/upsert-status")
+    public AdminUser upsertStatus(
+            @RequestBody Map<String, Object> body,
+            @RequestHeader(value = "X-User-Id", required = false) String userId,
+            @RequestHeader(value = "X-User-Role", required = false) String userRole) {
+        return service.upsertByEmail((String) body.get("email"), body);
+    }
+
+    @PatchMapping("/{id}/status")
+    public AdminUser updateStatus(
+            @PathVariable String id,
+            @RequestBody Map<String, String> body,
+            @RequestHeader(value = "X-User-Id", required = false) String userId,
+            @RequestHeader(value = "X-User-Role", required = false) String userRole) {
+        return service.updateStatus(id, com.digicart.platform.entity.AdminStatus.valueOf(body.get("status")));
+    }
+
+    @PatchMapping("/{id}/subscription")
+    public AdminUser updateSubscription(
+            @PathVariable String id,
+            @RequestBody Map<String, Object> body,
+            @RequestHeader(value = "X-User-Id", required = false) String userId,
+            @RequestHeader(value = "X-User-Role", required = false) String userRole) {
+        return service.updateSubscription(id, body);
     }
 }
