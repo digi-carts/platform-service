@@ -22,8 +22,10 @@ public class ServiceStatusController {
     public ResponseEntity<?> getStatus() {
         try {
             return ResponseEntity.ok(service.getStatus());
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            return ResponseEntity.status(503).body(Map.of("error", "Request interrupted"));
+        } catch (Exception e) {
             return ResponseEntity.status(503).body(Map.of("error", e.getMessage()));
         }
     }
