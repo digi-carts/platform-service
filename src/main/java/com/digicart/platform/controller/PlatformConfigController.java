@@ -23,7 +23,11 @@ public class PlatformConfigController {
     }
 
     @GetMapping("/admin-settings")
-    public ResponseEntity<Map<String, Object>> getAdminSettings() {
+    public ResponseEntity<?> getAdminSettings(
+            @RequestHeader(value = "X-User-Role", required = false) String userRole) {
+        if (!"superadmin".equalsIgnoreCase(userRole)) {
+            return ResponseEntity.status(403).body(Map.of("error", "Forbidden"));
+        }
         return ResponseEntity.ok(service.getAdminSettings());
     }
 
