@@ -19,7 +19,7 @@ public class CleanupController {
     @GetMapping("/schema")
     public ResponseEntity<?> getSchema(
             @RequestHeader(value = "X-User-Role", required = false) String userRole) {
-        if (!"SUPERADMIN".equals(userRole)) {
+        if (!"superadmin".equalsIgnoreCase(userRole)) {
             return ResponseEntity.status(403).body(Map.of("error", "Forbidden"));
         }
         try {

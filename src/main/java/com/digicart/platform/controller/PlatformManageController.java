@@ -31,9 +31,12 @@ public class PlatformManageController {
     }
 
     @GetMapping
-    public Map<String, Object> listAdmins(
+    public ResponseEntity<?> listAdmins(
             @RequestHeader(value = "X-User-Id", required = false) String userId,
             @RequestHeader(value = "X-User-Role", required = false) String userRole) {
+        if (!"superadmin".equalsIgnoreCase(userRole)) {
+            return ResponseEntity.status(403).body(Map.of("error", "Forbidden"));
+        }
         List<Map<String, Object>> admins = adminUserRepository.findAll().stream().map(a -> {
             Map<String, Object> m = new LinkedHashMap<>();
             m.put("id", a.getId());
@@ -43,7 +46,7 @@ public class PlatformManageController {
             m.put("daysUntilExpiry", a.getAvailableDays());
             return m;
         }).collect(Collectors.toList());
-        return Map.of("admins", admins);
+        return ResponseEntity.ok(Map.of("admins", admins));
     }
 
     @GetMapping("/my-usage")
