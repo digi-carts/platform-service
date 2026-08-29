@@ -28,4 +28,22 @@ public class CleanupController {
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
         }
     }
+
+    @PostMapping("/sql")
+    public ResponseEntity<?> executeSql(
+            @RequestHeader(value = "X-User-Role", required = false) String userRole,
+            @RequestBody Map<String, String> body) {
+        if (!"superadmin".equalsIgnoreCase(userRole)) {
+            return ResponseEntity.status(403).body(Map.of("error", "Forbidden"));
+        }
+        String query = body.get("query");
+        if (query == null || query.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Query is required"));
+        }
+        try {
+            return ResponseEntity.ok(cleanupService.executeQuery(query));
+        } catch (Exception e) {
+            return ResponseEntity.ok(Map.of("type", "error", "error", e.getMessage()));
+        }
+    }
 }
