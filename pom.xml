@@ -13,7 +13,7 @@
 
     <groupId>com.digicart</groupId>
     <artifactId>platform-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>platform-service</name>
     <description>digi-carts platform service</description>
 

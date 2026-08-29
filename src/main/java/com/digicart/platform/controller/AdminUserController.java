@@ -9,9 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
+/**
+ * REST controller exposing admin user HTTP APIs for <em>platform-service</em>.
+ */
 @RestController
-@RequestMapping("/admin-users")
+@RequestMapping("/api/platform/admin")
 public class AdminUserController {
 
     private final AdminUserService service;
@@ -67,5 +71,40 @@ public class AdminUserController {
             @RequestHeader(value = "X-User-Role", required = false) String userRole) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/upsert-status")
+    public ResponseEntity<?> upsertStatus(
+            @RequestBody Map<String, Object> body,
+            @RequestHeader(value = "X-User-Id", required = false) String userId,
+            @RequestHeader(value = "X-User-Role", required = false) String userRole) {
+        if (!"superadmin".equalsIgnoreCase(userRole)) {
+            return ResponseEntity.status(403).body(Map.of("error", "Forbidden"));
+        }
+        return ResponseEntity.ok(service.upsertByEmail((String) body.get("email"), body));
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<?> updateStatus(
+            @PathVariable String id,
+            @RequestBody Map<String, String> body,
+            @RequestHeader(value = "X-User-Id", required = false) String userId,
+            @RequestHeader(value = "X-User-Role", required = false) String userRole) {
+        if (!"superadmin".equalsIgnoreCase(userRole)) {
+            return ResponseEntity.status(403).body(Map.of("error", "Forbidden"));
+        }
+        return ResponseEntity.ok(service.updateStatus(id, com.digicart.platform.entity.AdminStatus.valueOf(body.get("status"))));
+    }
+
+    @PatchMapping("/{id}/subscription")
+    public ResponseEntity<?> updateSubscription(
+            @PathVariable String id,
+            @RequestBody Map<String, Object> body,
+            @RequestHeader(value = "X-User-Id", required = false) String userId,
+            @RequestHeader(value = "X-User-Role", required = false) String userRole) {
+        if (!"superadmin".equalsIgnoreCase(userRole)) {
+            return ResponseEntity.status(403).body(Map.of("error", "Forbidden"));
+        }
+        return ResponseEntity.ok(service.updateSubscription(id, body));
     }
 }

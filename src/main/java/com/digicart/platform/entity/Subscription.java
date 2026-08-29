@@ -1,11 +1,18 @@
 package com.digicart.platform.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 
+/**
+ * JPA entity mapped in this service schema (Subscription).
+ */
 @Entity
 @Table(name = "subscriptions", schema = "platform_svc")
 @EntityListeners(AuditingEntityListener.class)
@@ -34,11 +41,21 @@ public class Subscription {
     @Column(name = "custom_days")
     private Integer customDays;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "features", columnDefinition = "jsonb", nullable = false)
-    private String features = "{}";
+    private Map<String, Object> features = new HashMap<>();
 
     @Column(name = "details", columnDefinition = "TEXT")
     private String details;
+
+    @Column(name = "level")
+    private String level;
+
+    @Column(name = "max_uses")
+    private Integer maxUses;
+
+    @Column(name = "total_uses", nullable = false)
+    private Integer totalUses = 0;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -60,10 +77,16 @@ public class Subscription {
     public void setBillingPeriod(BillingPeriod billingPeriod) { this.billingPeriod = billingPeriod; }
     public Integer getCustomDays() { return customDays; }
     public void setCustomDays(Integer customDays) { this.customDays = customDays; }
-    public String getFeatures() { return features; }
-    public void setFeatures(String features) { this.features = features; }
+    public Map<String, Object> getFeatures() { return features; }
+    public void setFeatures(Map<String, Object> features) { this.features = features; }
     public String getDetails() { return details; }
     public void setDetails(String details) { this.details = details; }
+    public String getLevel() { return level; }
+    public void setLevel(String level) { this.level = level; }
+    public Integer getMaxUses() { return maxUses; }
+    public void setMaxUses(Integer maxUses) { this.maxUses = maxUses; }
+    public Integer getTotalUses() { return totalUses; }
+    public void setTotalUses(Integer totalUses) { this.totalUses = totalUses; }
     public Instant getCreatedAt() { return createdAt; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
 }

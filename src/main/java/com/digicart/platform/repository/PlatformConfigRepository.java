@@ -4,6 +4,9 @@ import com.digicart.platform.entity.PlatformConfig;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Spring Data JPA repository for platform config  persistence.
+ */
 @Repository
 public interface PlatformConfigRepository extends JpaRepository<PlatformConfig, String> {
 }

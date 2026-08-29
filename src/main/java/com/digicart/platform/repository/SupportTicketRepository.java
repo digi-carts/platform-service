@@ -7,9 +7,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Spring Data JPA repository for support ticket  persistence.
+ */
 @Repository
 public interface SupportTicketRepository extends JpaRepository<SupportTicket, String> {
     List<SupportTicket> findByStoreId(String storeId);
     List<SupportTicket> findByAdminEmail(String adminEmail);
     List<SupportTicket> findByStatus(TicketStatus status);
+    long countByStatusIn(List<TicketStatus> statuses);
 }

@@ -5,8 +5,14 @@ import com.digicart.platform.entity.TicketType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * Request/response DTO: Support Ticket Dto.
+ */
 public class SupportTicketDto {
 
+    /**
+     * Request/response DTO: Create Request.
+     */
     public static class CreateRequest {
         @NotBlank
         private String storeId;
@@ -27,6 +33,9 @@ public class SupportTicketDto {
         public void setDescription(String description) { this.description = description; }
     }
 
+    /**
+     * Request/response DTO: Update Request.
+     */
     public static class UpdateRequest {
         private TicketStatus status;
         private String description;

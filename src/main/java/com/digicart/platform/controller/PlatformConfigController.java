@@ -1,12 +1,14 @@
 package com.digicart.platform.controller;
 
-import com.digicart.platform.dto.PlatformConfigDto;
-import com.digicart.platform.entity.PlatformConfig;
 import com.digicart.platform.service.PlatformConfigService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
-@RequestMapping("/platform-config")
+@RequestMapping("/api/platform/platform-config")
 public class PlatformConfigController {
 
     private final PlatformConfigService service;
@@ -16,17 +18,58 @@ public class PlatformConfigController {
     }
 
     @GetMapping
-    public PlatformConfig get(
-            @RequestHeader(value = "X-User-Id", required = false) String userId,
-            @RequestHeader(value = "X-User-Role", required = false) String userRole) {
-        return service.get();
+    public ResponseEntity<Map<String, Object>> get() {
+        return ResponseEntity.ok(service.getData());
     }
 
-    @PutMapping
-    public PlatformConfig update(
-            @RequestBody PlatformConfigDto.UpdateRequest req,
-            @RequestHeader(value = "X-User-Id", required = false) String userId,
+    @GetMapping("/admin-settings")
+    public ResponseEntity<?> getAdminSettings(
             @RequestHeader(value = "X-User-Role", required = false) String userRole) {
-        return service.update(req);
+        if (!"superadmin".equalsIgnoreCase(userRole)) {
+            return ResponseEntity.status(403).body(Map.of("error", "Forbidden"));
+        }
+        return ResponseEntity.ok(service.getAdminSettings());
+    }
+
+    @GetMapping("/info-content")
+    public ResponseEntity<Object> getInfoContent() {
+        return ResponseEntity.ok(service.getInfoContent());
+    }
+
+    @GetMapping("/ai")
+    public ResponseEntity<Map<String, Object>> getAiConfig() {
+        return ResponseEntity.ok(service.getAiConfig());
+    }
+
+    @PatchMapping
+    public ResponseEntity<Map<String, Object>> patch(@RequestBody Map<String, Object> body) {
+        return ResponseEntity.ok(service.patch(body));
+    }
+
+    @PatchMapping("/info-content")
+    public ResponseEntity<Object> patchInfoContent(@RequestBody Map<String, Object> body) {
+        return ResponseEntity.ok(service.patchInfoContent(body));
+    }
+
+    @PostMapping("/cloudflare-test")
+    public ResponseEntity<Map<String, Object>> testCloudflare() {
+        return ResponseEntity.ok(service.testCloudflare());
+    }
+
+    @PostMapping("/cloudflare-dns")
+    public ResponseEntity<Map<String, Object>> addCloudflareDns(@RequestBody Map<String, Object> body) {
+        return ResponseEntity.ok(service.addCloudflareDns(body));
+    }
+
+    @PostMapping("/firebase-authorized-domains")
+    public ResponseEntity<Map<String, Object>> updateFirebaseAuthorizedDomains(@RequestBody Map<String, Object> body) {
+        @SuppressWarnings("unchecked")
+        List<String> domains = (List<String>) body.get("domains");
+        return ResponseEntity.ok(service.updateFirebaseAuthorizedDomains(domains != null ? domains : List.of()));
+    }
+
+    @PostMapping("/ai-chat")
+    public ResponseEntity<Map<String, Object>> aiChat(@RequestBody Map<String, String> body) {
+        return ResponseEntity.ok(service.aiChat(body.get("message")));
     }
 }

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="003-create-store-templates" author="digicart">
+        <createTable tableName="store_templates" schemaName="platform_svc">
+            <column name="id" type="VARCHAR(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="key" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="enabled" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="004-seed-store-templates" author="digicart">
+        <insert tableName="store_templates" schemaName="platform_svc">
+            <column name="id" value="default"/>
+            <column name="key" value="default"/>
+            <column name="name" value="Classic"/>
+            <column name="description" value="Dark header with a full-width product grid"/>
+            <column name="enabled" valueBoolean="true"/>
+        </insert>
+        <insert tableName="store_templates" schemaName="platform_svc">
+            <column name="id" value="sidebar"/>
+            <column name="key" value="sidebar"/>
+            <column name="name" value="Sidebar"/>
+            <column name="description" value="Left-rail category navigation with a product grid"/>
+            <column name="enabled" valueBoolean="true"/>
+        </insert>
+        <insert tableName="store_templates" schemaName="platform_svc">
+            <column name="id" value="card"/>
+            <column name="key" value="card"/>
+            <column name="name" value="Card"/>
+            <column name="description" value="Light gradient header with card-style product tiles"/>
+            <column name="enabled" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

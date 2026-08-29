@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!--
+        Hibernate 6 with GenerationType.UUID on a String field binds the value
+        as character varying, but PostgreSQL's uuid column type rejects varchar
+        input without an explicit cast. Changing all UUID PK/FK columns to
+        varchar(36) so Hibernate can bind its generated UUID strings directly.
+    -->
+    <changeSet id="003-alter-subscriptions-id-to-varchar" author="digicart">
+        <modifyDataType tableName="subscriptions" schemaName="platform_svc"
+                        columnName="id" newDataType="VARCHAR(36)"/>
+    </changeSet>
+
+    <changeSet id="003-alter-admin-users-id-to-varchar" author="digicart">
+        <modifyDataType tableName="admin_users" schemaName="platform_svc"
+                        columnName="id" newDataType="VARCHAR(36)"/>
+    </changeSet>
+
+    <changeSet id="003-alter-admin-users-subscription-id-to-varchar" author="digicart">
+        <modifyDataType tableName="admin_users" schemaName="platform_svc"
+                        columnName="subscription_id" newDataType="VARCHAR(36)"/>
+    </changeSet>
+
+    <changeSet id="003-alter-support-tickets-id-to-varchar" author="digicart">
+        <modifyDataType tableName="support_tickets" schemaName="platform_svc"
+                        columnName="id" newDataType="VARCHAR(36)"/>
+    </changeSet>
+
+    <changeSet id="003-alter-ticket-comments-id-to-varchar" author="digicart">
+        <modifyDataType tableName="ticket_comments" schemaName="platform_svc"
+                        columnName="id" newDataType="VARCHAR(36)"/>
+    </changeSet>
+
+    <changeSet id="003-alter-ticket-comments-ticket-id-to-varchar" author="digicart">
+        <modifyDataType tableName="ticket_comments" schemaName="platform_svc"
+                        columnName="ticket_id" newDataType="VARCHAR(36)"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -8,10 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
+/**
+ * REST controller exposing subscription HTTP APIs for <em>platform-service</em>.
+ */
 @RestController
-@RequestMapping("/subscriptions")
+@RequestMapping("/api/platform/subscriptions")
 public class SubscriptionController {
 
     private final SubscriptionService service;
@@ -21,10 +24,10 @@ public class SubscriptionController {
     }
 
     @GetMapping
-    public List<Subscription> findAll(
+    public Map<String, Object> findAll(
             @RequestHeader(value = "X-User-Id", required = false) String userId,
             @RequestHeader(value = "X-User-Role", required = false) String userRole) {
-        return service.findAll();
+        return Map.of("subscriptions", service.findAll());
     }
 
     @GetMapping("/{id}")
@@ -43,7 +46,7 @@ public class SubscriptionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(req));
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public Subscription update(
             @PathVariable String id,
             @RequestBody SubscriptionDto.UpdateRequest req,
